@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">RecipEasy</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+
+    <string name="action_settings">Settings</string>
+
+    <string name="discover_label">Discover</string>
+    <string name="recipes_label">My Recipes</string>
+    <string name="lists_label">My Lists</string>
+    <string name="favorites_label">My Favorites</string>
+
+
+</resources>
