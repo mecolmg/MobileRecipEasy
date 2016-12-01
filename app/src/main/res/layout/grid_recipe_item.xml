@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:background="#000">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/stock_food"
+        android:scaleType="centerCrop"
+        android:id="@+id/recipe_image"
+        android:alpha="1"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/recipe_text"
+        android:layout_alignBottom="@+id/recipe_text"
+        android:background="#000"
+        android:alpha=".6"></View>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/recipe_text"
+        android:layout_alignBottom="@+id/recipe_image"
+        android:textColor="#fff"
+        android:padding="10dp"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:text="Recipe Name"/>
+
+</RelativeLayout>
