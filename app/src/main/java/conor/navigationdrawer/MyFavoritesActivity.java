@@ -54,7 +54,7 @@ public class MyFavoritesActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.discover, menu);
+        getMenuInflater().inflate(R.menu.favorites_toolbar_options, menu);
         return true;
     }
 
