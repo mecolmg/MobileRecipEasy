@@ -2,6 +2,7 @@ package conor.navigationdrawer;
 
 import android.app.SearchManager;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -12,7 +13,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +21,11 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.Toast;
+
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +45,12 @@ public class DiscoverActivity extends AppCompatActivity
     private GridView recipeGrid;
     private Button loadMore;
     private RecipeAdapter recipeGridAdapter;
+    public final static String RECIPE_JSON = "Recipe json";
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +80,9 @@ public class DiscoverActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 JSONObject recipe = (JSONObject) recipeGridAdapter.getItem(position);
+                Intent intent = new Intent(DiscoverActivity.this, RecipeViewActivity.class);
+                intent.putExtra(RECIPE_JSON, recipe.toString());
+                startActivity(intent);
                 try {
                     Toast.makeText(DiscoverActivity.this, "" + recipe.getInt("id"),
                             Toast.LENGTH_SHORT).show();
@@ -80,23 +94,28 @@ public class DiscoverActivity extends AppCompatActivity
 
         recipeGrid.setOnScrollListener(new AbsListView.OnScrollListener() {
             private boolean loading = false;
+
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
             }
+
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if(loading){
-                    if(firstVisibleItem + visibleItemCount < totalItemCount){
+                if (loading) {
+                    if (firstVisibleItem + visibleItemCount < totalItemCount) {
                         loading = false;
                     }
                 } else {
-                    if(firstVisibleItem + visibleItemCount >= totalItemCount){
+                    if (firstVisibleItem + visibleItemCount >= totalItemCount) {
                         new RestGetTask().execute("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/random?limitLicense=false&number=10");
                         loading = true;
                     }
                 }
             }
         });
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
@@ -204,6 +223,42 @@ public class DiscoverActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("Discover Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
+    }
+
     class RestGetTask extends AsyncTask<String, Void, String> {
 
         @Override
@@ -227,18 +282,17 @@ public class DiscoverActivity extends AppCompatActivity
                         StringBuilder sb = new StringBuilder();
                         String line;
                         while ((line = br.readLine()) != null) {
-                            sb.append(line+"\n");
+                            sb.append(line + "\n");
                         }
                         br.close();
                         response = sb.toString();
                 }
-            }
-            catch (MalformedURLException e) {
+            } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                if(connection != null){
+                if (connection != null) {
                     connection.disconnect();
                 }
             }
@@ -251,7 +305,7 @@ public class DiscoverActivity extends AppCompatActivity
                 JSONObject response = new JSONObject(s);
                 JSONArray newRecipes = response.getJSONArray("recipes");
                 ArrayList<JSONObject> recipeList = new ArrayList<>();
-                for(int i=0; i < newRecipes.length(); i++){
+                for (int i = 0; i < newRecipes.length(); i++) {
                     recipeList.add(newRecipes.getJSONObject(i));
                 }
                 recipeGridAdapter.addItems(recipeList);
