@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,7 +44,10 @@ public class RecipeViewActivity extends AppCompatActivity {
             recipe = new JSONObject(json);
 
             recipeTitle.setText(recipe.getString("title"));
-
+            Picasso.with(this)
+                    .load(recipe.getString("image"))
+                    .placeholder(R.drawable.stock_no_image)
+                    .into(recipeImage);
         } catch (JSONException e) {
             e.printStackTrace();
         }
