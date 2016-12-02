@@ -75,13 +75,21 @@ public class DiscoverActivity extends AppCompatActivity
         });
 
         recipeGrid.setOnScrollListener(new AbsListView.OnScrollListener() {
+            private boolean loading = false;
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
             }
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if(firstVisibleItem + visibleItemCount >= totalItemCount){
-                    new RestGetTask().execute("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/random?limitLicense=false&number=10");
+                if(loading){
+                    if(firstVisibleItem + visibleItemCount < totalItemCount){
+                        loading = false;
+                    }
+                } else {
+                    if(firstVisibleItem + visibleItemCount >= totalItemCount){
+                        new RestGetTask().execute("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/random?limitLicense=false&number=10");
+                        loading = true;
+                    }
                 }
             }
         });
