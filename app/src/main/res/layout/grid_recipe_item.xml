@@ -6,7 +6,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/stock_food"
+        android:src="@drawable/stock_no_image"
         android:scaleType="centerCrop"
         android:id="@+id/recipe_image"
         android:alpha="1"/>
@@ -27,7 +27,7 @@
         android:textColor="#fff"
         android:padding="10dp"
         android:textStyle="bold"
-        android:textSize="20dp"
+        android:textSize="16dp"
         android:text="Recipe Name"/>
 
 </RelativeLayout>
