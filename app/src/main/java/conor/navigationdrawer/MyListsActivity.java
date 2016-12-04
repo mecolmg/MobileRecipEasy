@@ -117,9 +117,9 @@ public class MyListsActivity extends AppCompatActivity
         if (id == R.id.discover_activity) {
             //no intent needed becuase already here
 
-            Intent intent = new Intent(this, DiscoverActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-            startActivity(intent);
+//            Intent intent = new Intent(this, DiscoverActivity.class);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+//            startActivity(intent);
             this.finish();
 
         } else if (id == R.id.my_recipes_activity) {
