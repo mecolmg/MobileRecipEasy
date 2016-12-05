@@ -55,7 +55,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter impleme
     }
 
     @Override
-    public View getChildView(int listPosition, final int expandedListPosition,
+    public View getChildView(final int listPosition, final int expandedListPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
 
 
@@ -65,6 +65,30 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter impleme
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.list_item, null);
         }
+
+        Button deleteBtn = (Button) convertView.findViewById(R.id.delete_btn);
+
+        deleteBtn.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                //do something
+                String listToDeleteItemFrom = expandableListTitle.get(listPosition);
+
+                ArrayList<String> itemList = expandableListDetail.get(listToDeleteItemFrom);
+
+                String itemToRemove = itemList.get(expandedListPosition);
+
+                itemList.remove(expandedListPosition);
+                Log.e("Deleting item ", itemToRemove);
+
+                database.removeIngredientFromMyList(listToDeleteItemFrom, itemToRemove);
+
+                ExpandableListViewAdapter.this.notifyDataSetChanged();
+            }
+        });
+
+
         TextView expandedListTextView = (TextView) convertView
                 .findViewById(R.id.expandedListItem);
         expandedListTextView.setText(expandedListText);
@@ -190,5 +214,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter impleme
     @Override
     public void onDialogCancelClick(Dialog dialog) {
 
+        dialog.cancel();
+        dialog.dismiss();
     }
 }

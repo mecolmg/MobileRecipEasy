@@ -13,8 +13,6 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp" />
 
-
-
     <Button
         android:id="@+id/delete_btn"
         android:layout_weight=".15"
@@ -25,7 +23,7 @@
         android:layout_marginRight="5dp"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:text="Delete List"
+        android:text="Delete Item"
         android:textSize="12dp" />
 
     <!--<ImageButton
