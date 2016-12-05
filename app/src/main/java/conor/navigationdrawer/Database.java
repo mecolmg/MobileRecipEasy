@@ -31,7 +31,7 @@ public class Database {
 
     public Activity activity;
 
-    public Set<String> myList;
+    public ArrayList<String> myList;
     public HashMap<String, Set<String>> myListIngredientsMap;
 
     public ArrayList<String> favoritesList; //keys for all of the jsonobjects
@@ -41,7 +41,7 @@ public class Database {
     public Database(Activity activity) {
         favoritesList = new ArrayList<>();
         jSONMap = new HashMap<>();
-        myList = new HashSet<>();
+        myList = new ArrayList<>();
         myListIngredientsMap = new HashMap<>();
 
         this.activity = activity;
@@ -62,7 +62,8 @@ public class Database {
 
         myListIngredientsMap.put(listName+MY_LIST_INGREDIENTS, new HashSet<String>());
 
-        prefEditor.putStringSet(MY_LIST_KEY, myList);
+
+        prefEditor.putStringSet(MY_LIST_KEY, new HashSet<>(myList));
         prefEditor.putStringSet(listName + MY_LIST_INGREDIENTS, new HashSet<String>());
 
         prefEditor.commit();
@@ -100,12 +101,14 @@ public class Database {
         prefEditor.commit();
     }
 
-    public Set<String> getMyList(){
+    public ArrayList<String> getMyList(){
         return myList;
     }
 
-    public Set<String> getIngredientSet(String listName){
-        return myListIngredientsMap.get(listName+MY_LIST_INGREDIENTS);
+    public ArrayList<String> getIngredientSet(String listName){
+        ArrayList<String> ingredientList = new ArrayList<>();
+        ingredientList.addAll(myListIngredientsMap.get(listName+MY_LIST_INGREDIENTS));
+        return ingredientList;
     }
 
     //-----------------------------------for MyList use--------------------------------------------
