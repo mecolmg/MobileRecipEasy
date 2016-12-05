@@ -70,11 +70,15 @@ public class Database {
     }
 
     public void removeListFromMyLists(String listName){
+        //myListSet = sharedPref.getStringSet(MY_LIST_KEY, null);
         myList.remove(listName);
+        //System.out.println("list size: " + myList.size());
         myListIngredientsMap.remove(listName+MY_LIST_INGREDIENTS);
 
-        if(sharedPref.contains(listName)){
-            prefEditor.remove(listName);
+        if(sharedPref.contains(MY_LIST_KEY)) {
+            prefEditor.remove(MY_LIST_KEY);
+            prefEditor.putStringSet(MY_LIST_KEY, new HashSet<>(myList));
+            //System.out.println("removing list from database: " + listName);
         }
         if(sharedPref.contains(listName+MY_LIST_INGREDIENTS)){
             prefEditor.remove(listName+MY_LIST_INGREDIENTS);
@@ -176,6 +180,7 @@ public class Database {
         if(myListSet != null){
             for(String listItem : myListSet){
                 myList.add(listItem);
+                System.out.println("listItem: " + listItem);
                 Set<String> myListIngredientSet = sharedPref.getStringSet(listItem+MY_LIST_INGREDIENTS, null);
                 myListIngredientsMap.put(listItem+MY_LIST_INGREDIENTS, myListIngredientSet);
             }

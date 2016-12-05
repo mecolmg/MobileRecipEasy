@@ -129,6 +129,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
                 expandableListTitle.remove(listToDelete);
                 Log.e("Deleting List", listToDelete);
                 database.removeListFromMyLists(listToDelete);
+                database.printDatabase();
 
                 ExpandableListViewAdapter.this.notifyDataSetChanged();
             }

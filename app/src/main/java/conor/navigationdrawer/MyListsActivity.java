@@ -248,6 +248,7 @@ public class MyListsActivity extends AppCompatActivity
         expandableListAdapter.notifyDataSetChanged();
 
         database.addListToMyLists(listName);
+
         //listItems.add(listName);
         //adapter.notifyDataSetChanged();
     }
