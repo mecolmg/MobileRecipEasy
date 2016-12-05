@@ -124,7 +124,7 @@ public class Database {
     public void storeJSONObject(JSONObject jObj){
         String keyId = null;
         try {
-            keyId = jObj.getString("id");
+            keyId = ""+jObj.getInt("id");
             if (!favoritesList.contains(keyId)) {
                 favoritesList.add(keyId);
             }
@@ -164,7 +164,7 @@ public class Database {
         ArrayList<JSONObject> jsonObjects = new ArrayList<>();
         for(String str : favoritesList){
             try {
-                jsonObjects.add(new JSONObject(str));
+                jsonObjects.add(getJSONObject(str));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

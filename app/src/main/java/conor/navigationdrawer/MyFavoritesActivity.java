@@ -8,6 +8,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridView;
@@ -47,8 +48,9 @@ public class MyFavoritesActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_drawer);
         navigationView.setNavigationItemSelectedListener(this);
 
-        database = new Database(this);
+        database = DiscoverActivity.database;
         ArrayList<JSONObject> favorites = database.getFavoritesList();
+        Log.d("FAVORITES", "Size: "+favorites.size());
         recipeGrid = (GridView) findViewById(R.id.recipe_grid);
         recipeGridAdapter = new RecipeAdapter(this);
         recipeGridAdapter.addItems(favorites);
