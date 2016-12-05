@@ -50,7 +50,7 @@ public class Database {
         prefEditor = activity.getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
         retrieveDataFromStorage();
     }
-
+    //-----------------------------------for MyList use--------------------------------------------
     public void addListToMyLists(String listName){
         myList.add(listName);
         if(sharedPref.contains(MY_LIST_KEY)){
@@ -71,7 +71,7 @@ public class Database {
     public void removeListFromMyLists(String listName){
         myList.remove(listName);
         myListIngredientsMap.remove(listName+MY_LIST_INGREDIENTS);
-        
+
         if(sharedPref.contains(listName)){
             prefEditor.remove(listName);
         }
@@ -79,16 +79,38 @@ public class Database {
             prefEditor.remove(listName+MY_LIST_INGREDIENTS);
         }
 
-        //prefEditor.putStringSet(MY_LIST_KEY, myList);
         prefEditor.commit();
     }
 
     public void addIngredientToMyList(String listName, String ingredient){
-        myListIngredientsMap.get(listName).add(ingredient);
-
-
-
+        myListIngredientsMap.get(listName+MY_LIST_INGREDIENTS).add(ingredient);
+        if(sharedPref.contains(listName+MY_LIST_INGREDIENTS)){
+            prefEditor.remove(listName+MY_LIST_INGREDIENTS);
+        }
+        prefEditor.putStringSet(listName+MY_LIST_INGREDIENTS, myListIngredientsMap.get(listName + MY_LIST_INGREDIENTS));
+        prefEditor.commit();
     }
+
+    public void removeIngredientFromMyList(String listName, String ingredient){
+        myListIngredientsMap.get(listName).remove(ingredient);
+        if(sharedPref.contains(listName+MY_LIST_INGREDIENTS)){
+            prefEditor.remove(listName+MY_LIST_INGREDIENTS);
+        }
+        prefEditor.putStringSet(listName+MY_LIST_INGREDIENTS, myListIngredientsMap.get(listName + MY_LIST_INGREDIENTS));
+        prefEditor.commit();
+    }
+
+    public Set<String> getMyList(){
+        return myList;
+    }
+
+    public Set<String> getIngredientSet(String listName){
+        return myListIngredientsMap.get(listName+MY_LIST_INGREDIENTS);
+    }
+
+    //-----------------------------------for MyList use--------------------------------------------
+
+    //-----------------------------------for JSON obj use------------------------------------------
 
     public void storeJSONObject(JSONObject jObj) throws org.json.JSONException {
         String keyId = jObj.getString("id");
@@ -128,6 +150,8 @@ public class Database {
         return favoritesList;
     }
 
+    //-----------------------------------for JSON obj use------------------------------------------
+
     public void retrieveDataFromStorage() {
         Set<String> favoritesSet = sharedPref.getStringSet(FAV_LIST_KEY, null);
         Set<String> myListSet = sharedPref.getStringSet(MY_LIST_KEY, null);
@@ -147,8 +171,8 @@ public class Database {
         if(myListSet != null){
             for(String listItem : myListSet){
                 myList.add(listItem);
-                Set<String> myListIngredientSet = sharedPref.getStringSet(listItem, null);
-                myListIngredientsMap.put(listItem, myListIngredientSet);
+                Set<String> myListIngredientSet = sharedPref.getStringSet(listItem+MY_LIST_INGREDIENTS, null);
+                myListIngredientsMap.put(listItem+MY_LIST_INGREDIENTS, myListIngredientSet);
             }
         }
 
