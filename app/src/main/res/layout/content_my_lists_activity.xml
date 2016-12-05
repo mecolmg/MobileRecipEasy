@@ -12,8 +12,15 @@
     tools:context="conor.navigationdrawer.MyListsActivity"
     tools:showIn="@layout/app_bar_my_lists_activity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="My Lists Activity!" />
+    <ExpandableListView
+        android:id="@+id/list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
+        android:divider="@color/colorPrimary"
+        android:dividerHeight="2dp"
+        style="@style/AppTheme">
+    </ExpandableListView>
+
+
 </RelativeLayout>

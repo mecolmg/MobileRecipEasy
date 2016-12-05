@@ -148,7 +148,6 @@ public class DiscoverActivity extends AppCompatActivity
 
                 //QUERY THE API FROM HERE
 
-
                 //Log.e("Query Submitted", query);
                 return true;
             }

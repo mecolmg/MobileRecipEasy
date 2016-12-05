@@ -107,7 +107,9 @@ public class Database {
 
     public ArrayList<String> getIngredientSet(String listName){
         ArrayList<String> ingredientList = new ArrayList<>();
-        ingredientList.addAll(myListIngredientsMap.get(listName+MY_LIST_INGREDIENTS));
+        if(myListIngredientsMap.get(listName + MY_LIST_INGREDIENTS) != null) {
+            ingredientList.addAll(myListIngredientsMap.get(listName + MY_LIST_INGREDIENTS));
+        }
         return ingredientList;
     }
 

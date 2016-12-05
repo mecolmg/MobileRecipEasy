@@ -1,11 +1,9 @@
 package conor.navigationdrawer;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -14,19 +12,66 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ExpandableListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MyListsActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, CreateListDialogueFragment.NoticeDialogListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        CreateListDialog.DialogListener  {
 
+    Database database;
     boolean mIsLargeLayout;
+
+
+    ExpandableListView expandableListView;
+    ExpandableListViewAdapter expandableListAdapter;
+
+
+    ArrayList<String> listNames;
+    HashMap<String, ArrayList<String>> expandableListDetail; //where the key is the name of the lsit
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_discover);
+        setContentView(R.layout.activity_my_lists);
 
-
+        database = new Database(this);
+        expandableListView = (ExpandableListView) findViewById(R.id.list_view);
         mIsLargeLayout = getResources().getBoolean(R.bool.large_layout);
+
+
+        listNames = database.getMyList();
+        expandableListDetail = new HashMap<>();
+        this.populateExpandableListViewFromDatabase();    //populate listView with active lists
+
+
+
+
+        /*for (int i = 0; i < 20; i++)
+        {
+            listNames.add("List " + i);
+
+            ArrayList<String> detail = new ArrayList<>();
+            for (int j = 0; j < 6; j++)
+            {
+                detail.add("item " + j);
+            }
+            expandableListDetail.put("List " + i, detail);
+        }*/
+
+
+        expandableListAdapter = new ExpandableListViewAdapter(this, listNames, expandableListDetail, this);
+        expandableListView.setAdapter(expandableListAdapter);
+
+
+        this.setListOnClicks();
 
         Intent intent = getIntent();
         //do shit with intent if needed
@@ -47,8 +92,59 @@ public class MyListsActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-
     }
+
+    public void populateExpandableListViewFromDatabase()
+    {
+        for (String listName : listNames)
+        {
+            ArrayList<String> ingredientsForList = database.getIngredientSet(listName);
+            expandableListDetail.put(listName, ingredientsForList);
+        }
+    }
+
+    private void setListOnClicks()
+    {
+        expandableListView.setAdapter(expandableListAdapter);
+        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                Toast.makeText(getApplicationContext(),
+                        listNames.get(groupPosition) + " List Expanded.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        expandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+
+            @Override
+            public void onGroupCollapse(int groupPosition) {
+                Toast.makeText(getApplicationContext(),
+                        listNames.get(groupPosition) + " List Collapsed.",
+                        Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v,
+                                        int groupPosition, int childPosition, long id) {
+                Toast.makeText(
+                        getApplicationContext(),
+                        listNames.get(groupPosition)
+                                + " -> "
+                                + expandableListDetail.get(
+                                listNames.get(groupPosition)).get(
+                                childPosition), Toast.LENGTH_SHORT
+                ).show();
+                return false;
+            }
+        });
+    }
+
+
 
     @Override
     public void onBackPressed() {
@@ -80,30 +176,17 @@ public class MyListsActivity extends AppCompatActivity
         }
         if (id == R.id.action_add_list) {
             Log.e("Action_add_list", "creating add lsit dialogue");
-            this.showCreateDialogueFragment();
+            this.showCreateListDialog();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void showCreateDialogueFragment()
+    public void showCreateListDialog()
     {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        CreateListDialogueFragment newFragment = new CreateListDialogueFragment();
-
-        if (mIsLargeLayout) {
-            // The device is using a large layout, so show the fragment as a dialog
-            newFragment.show(fragmentManager, "dialog");
-        } else {
-            // The device is smaller, so show the fragment fullscreen
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            // For a little polish, specify a transition animation
-            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            // To make it fullscreen, use the 'content' root view as the container
-            // for the fragment, which is always the root view for the activity
-            transaction.add(android.R.id.content, newFragment)
-                    .addToBackStack(null).commit();
-        }
+        CreateListDialog dialog = new CreateListDialog(this);
+        dialog.setmListener(this);
+        dialog.show();
     }
 
 
@@ -152,17 +235,28 @@ public class MyListsActivity extends AppCompatActivity
     }
 
 
-    //Method for confirm clicked
-    @Override
-    public void onDialogPositiveClick(DialogFragment dialog) {
 
+    @Override
+    public void onDialogCreateClick(Dialog dialog, String listName) {
+        Log.e("create clicked", "create list with name " + listName);
+
+
+
+
+        //listNames.add(0, listName);
+        expandableListDetail.put(listName, new ArrayList<String>());
+        expandableListAdapter.notifyDataSetChanged();
+
+        database.addListToMyLists(listName);
+        //listItems.add(listName);
+        //adapter.notifyDataSetChanged();
     }
 
-    //method for cancel clicked
+
+
     @Override
-    public void onDialogNegativeClick(DialogFragment dialog) {
-
+    public void onDialogCancelClick(Dialog dialog) {
+        Log.e("cancel clicked", "dismissing dialog");
+        dialog.dismiss();
     }
-
-
 }
