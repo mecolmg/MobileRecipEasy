@@ -7,6 +7,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 /**
  * Created by conoroneill on 12/2/16.
@@ -18,7 +19,7 @@ public class CreateListDialog extends Dialog implements View.OnClickListener {
          * implement this interface in order to receive event callbacks.
          * Each method passes the DialogFragment in case the host needs to query it. */
     public static interface DialogListener {
-        public void onDialogCreateClick(Dialog dialog, String listName);
+        public void onDialogCreateClick(CreateListDialog dialog, String string);
         public void onDialogCancelClick(Dialog dialog);
     }
 
@@ -30,9 +31,12 @@ public class CreateListDialog extends Dialog implements View.OnClickListener {
     Button cancelButton;
     Button createButton;
     EditText editText;
+
+    TextView dialogTitle;
+
     ListView listView;
 
-    public CreateListDialog(Context context) {
+    public CreateListDialog(Context context, String titleString, String hint) {
         super(context);
 
         // Log.v("Length",""+hi.length);
@@ -41,7 +45,13 @@ public class CreateListDialog extends Dialog implements View.OnClickListener {
         /** Design the dialog in main.xml file */
         setContentView(R.layout.create_list_dialogue);
 
+
+        dialogTitle = (TextView)findViewById(R.id.dialog_title);
+        dialogTitle.setText(titleString);
+
         editText = (EditText)findViewById(R.id.editText);
+        editText.setHint(hint);
+
         listView = (ListView)findViewById(R.id.list_view);
 
         //ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1,hi);

@@ -184,7 +184,7 @@ public class MyListsActivity extends AppCompatActivity
 
     public void showCreateListDialog()
     {
-        CreateListDialog dialog = new CreateListDialog(this);
+        CreateListDialog dialog = new CreateListDialog(this, "Create List", "List Name:");
         dialog.setmListener(this);
         dialog.show();
     }
@@ -237,10 +237,8 @@ public class MyListsActivity extends AppCompatActivity
 
 
     @Override
-    public void onDialogCreateClick(Dialog dialog, String listName) {
+    public void onDialogCreateClick(CreateListDialog dialog, String listName) {
         Log.e("create clicked", "create list with name " + listName);
-
-
 
 
         //listNames.add(0, listName);

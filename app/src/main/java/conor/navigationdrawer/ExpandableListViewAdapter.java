@@ -1,6 +1,7 @@
 package conor.navigationdrawer;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.media.Image;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.data.DataBufferObserverSet;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +26,8 @@ import java.util.List;
  * Created by conoroneill on 12/4/16.
  */
 
-public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
+public class ExpandableListViewAdapter extends BaseExpandableListAdapter implements CreateListDialog.DialogListener
+{
 
     Database database;
     private Context context;
@@ -116,6 +119,19 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
             convertView = layoutInflater.inflate(R.layout.list_group, null);
         }
 
+        Button addButton = (Button) convertView.findViewById(R.id.addbutton);
+
+        addButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+
+                String listToAddIngrediate = expandableListTitle.get(listPosition);
+                CreateListDialog dialog = new CreateListDialog(context, "Add Item To " + listToAddIngrediate , "Item Name:");
+                dialog.setmListener(ExpandableListViewAdapter.this);
+                dialog.show();
+            }
+        });
+
         //View row = convertView(R.layout.list_group, parent, false);
         //Handle buttons and add onClickListeners
         Button deleteBtn = (Button) convertView.findViewById(R.id.delete_btn);
@@ -150,5 +166,29 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int listPosition, int expandedListPosition) {
         return true;
+    }
+
+    @Override
+    public void onDialogCreateClick(CreateListDialog dialog, String listName) {
+        //add ingrediant lsitname to a
+        String title = dialog.dialogTitle.getText().toString();
+
+        String[] commandInfo = title.split("Add Item To ");
+        //ommandInfo = commandInfo[1].split("<SEP>");
+
+        String listNameFromDialog = commandInfo[1];
+        Log.e("ADDING ITEM to List  ", "LIST NAME = " + listNameFromDialog + "\t" + "ITEM NAME = " + listName );
+
+        ArrayList<String> itemsForListName = expandableListDetail.get(listNameFromDialog);
+
+        itemsForListName.add(listName);
+        ExpandableListViewAdapter.this.notifyDataSetChanged();
+
+        database.addIngredientToMyList(listNameFromDialog, listName);
+    }
+
+    @Override
+    public void onDialogCancelClick(Dialog dialog) {
+
     }
 }
