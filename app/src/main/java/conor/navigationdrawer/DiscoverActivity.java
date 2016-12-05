@@ -46,7 +46,7 @@ public class DiscoverActivity extends AppCompatActivity
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
-    public Database database;
+    public static Database database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

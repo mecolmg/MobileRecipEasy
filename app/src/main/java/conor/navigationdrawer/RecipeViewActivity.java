@@ -36,7 +36,7 @@ public class RecipeViewActivity extends AppCompatActivity implements View.OnClic
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        database = new Database(this);
+        database = DiscoverActivity.database;
 
         recipeTitle = (TextView) findViewById(R.id.recipe_title);
         recipeInstructions = (TextView) findViewById(R.id.recipe_instructions);

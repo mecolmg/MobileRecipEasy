@@ -4,23 +4,16 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.common.data.DataBufferObserverSet;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by conoroneill on 12/4/16.
@@ -37,7 +30,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter impleme
     public ExpandableListViewAdapter(Context context, ArrayList<String> expandableListTitle,
                                        HashMap<String, ArrayList<String>> expandableListDetail, Activity activity) {
 
-        this.database = new Database(activity);
+        this.database = DiscoverActivity.database;
         this.context = context;
         this.expandableListTitle = expandableListTitle;
         this.expandableListDetail = expandableListDetail;

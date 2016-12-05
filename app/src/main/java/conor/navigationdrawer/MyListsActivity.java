@@ -18,8 +18,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 public class MyListsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -42,7 +40,7 @@ public class MyListsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_lists);
 
-        database = new Database(this);
+        database = DiscoverActivity.database;
         expandableListView = (ExpandableListView) findViewById(R.id.list_view);
         mIsLargeLayout = getResources().getBoolean(R.bool.large_layout);
 

@@ -97,7 +97,7 @@ public class Database {
     }
 
     public void removeIngredientFromMyList(String listName, String ingredient){
-        myListIngredientsMap.get(listName).remove(ingredient);
+        myListIngredientsMap.get(listName+MY_LIST_INGREDIENTS).remove(ingredient);
         if(sharedPref.contains(listName+MY_LIST_INGREDIENTS)){
             prefEditor.remove(listName+MY_LIST_INGREDIENTS);
         }
