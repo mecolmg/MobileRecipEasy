@@ -121,21 +121,26 @@ public class Database {
 
     //-----------------------------------for JSON obj use------------------------------------------
 
-    public void storeJSONObject(JSONObject jObj) throws org.json.JSONException {
-        String keyId = jObj.getString("id");
-        if (!favoritesList.contains(keyId)) {
-            favoritesList.add(keyId);
+    public void storeJSONObject(JSONObject jObj){
+        String keyId = null;
+        try {
+            keyId = jObj.getString("id");
+            if (!favoritesList.contains(keyId)) {
+                favoritesList.add(keyId);
+            }
+            jSONMap.put(keyId, jObj);
+            String value = jObj.toString();
+            if (!sharedPref.contains(keyId)) {
+                prefEditor.putString(keyId, value);
+            }
+            if (sharedPref.contains(FAV_LIST_KEY)) {
+                prefEditor.remove(FAV_LIST_KEY);
+                prefEditor.putStringSet(FAV_LIST_KEY, new HashSet<>(favoritesList));
+            }
+            prefEditor.commit();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        jSONMap.put(keyId, jObj);
-        String value = jObj.toString();
-        if (!sharedPref.contains(keyId)) {
-            prefEditor.putString(keyId, value);
-        }
-        if (sharedPref.contains(FAV_LIST_KEY)) {
-            prefEditor.remove(FAV_LIST_KEY);
-            prefEditor.putStringSet(FAV_LIST_KEY, new HashSet<>(favoritesList));
-        }
-        prefEditor.commit();
     }
 
     public JSONObject getJSONObject(String keyId) throws org.json.JSONException {

@@ -27,7 +27,7 @@ public class RecipeViewActivity extends AppCompatActivity implements View.OnClic
     private TextView recipeTitle, recipeInstructions, instructionsTitle;
     private LinearLayout ingredientList;
     private Database database;
-    private Button viewRecipe;
+    private Button viewRecipe, addFavorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +43,11 @@ public class RecipeViewActivity extends AppCompatActivity implements View.OnClic
         instructionsTitle = (TextView) findViewById(R.id.instructions_title);
         recipeImage = (ImageView) findViewById(R.id.recipe_image);
         ingredientList = (LinearLayout) findViewById(R.id.ingredient_list);
+        addFavorite = (Button) findViewById(R.id.add_favorite);
 
         viewRecipe = (Button) findViewById(R.id.view_recipe);
         viewRecipe.setOnClickListener(this);
+        addFavorite.setOnClickListener(this);
 
         try {
             String json = getIntent().getStringExtra(DiscoverActivity.RECIPE_JSON);
@@ -120,6 +122,9 @@ public class RecipeViewActivity extends AppCompatActivity implements View.OnClic
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                break;
+            case R.id.add_favorite:
+                database.storeJSONObject(recipe);
                 break;
             default:
                 break;

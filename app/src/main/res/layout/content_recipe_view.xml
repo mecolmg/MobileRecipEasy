@@ -79,6 +79,11 @@
                     android:layout_height="wrap_content"
                     android:text="View Recipe"
                     android:id="@+id/view_recipe"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Add Favorite"
+                    android:id="@+id/add_favorite"/>
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>
