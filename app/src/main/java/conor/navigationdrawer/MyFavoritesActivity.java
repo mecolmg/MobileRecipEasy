@@ -10,9 +10,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.GridView;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class MyFavoritesActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+
+    private Database database;
+    private GridView recipeGrid;
+    private RecipeAdapter recipeGridAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +47,12 @@ public class MyFavoritesActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_drawer);
         navigationView.setNavigationItemSelectedListener(this);
 
-
-
+        database = new Database(this);
+        ArrayList<JSONObject> favorites = database.getFavoritesList();
+        recipeGrid = (GridView) findViewById(R.id.recipe_grid);
+        recipeGridAdapter = new RecipeAdapter(this);
+        recipeGridAdapter.addItems(favorites);
+        recipeGrid.setAdapter(recipeGridAdapter);
     }
 
     @Override

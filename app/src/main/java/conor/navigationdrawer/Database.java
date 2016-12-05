@@ -155,8 +155,16 @@ public class Database {
         prefEditor.commit();
     }
 
-    public ArrayList<String> getFavoritesList() {
-        return favoritesList;
+    public ArrayList<JSONObject> getFavoritesList() {
+        ArrayList<JSONObject> jsonObjects = new ArrayList<>();
+        for(String str : favoritesList){
+            try {
+                jsonObjects.add(new JSONObject(str));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return jsonObjects;
     }
 
     //-----------------------------------for JSON obj use------------------------------------------
