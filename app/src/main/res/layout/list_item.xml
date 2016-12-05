@@ -5,7 +5,8 @@
 
     <TextView
         android:id="@+id/expandedListItem"
-        android:layout_width="fill_parent"
+        android:layout_weight=".85"
+        android:layout_width="0dp"
         android:textSize="20dp"
         android:layout_height="wrap_content"
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
@@ -13,6 +14,19 @@
         android:paddingBottom="10dp" />
 
 
+
+    <Button
+        android:id="@+id/delete_btn"
+        android:layout_weight=".15"
+        android:layout_width="0dp"
+        android:layout_height="35dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:text="Delete List"
+        android:textSize="12dp" />
 
     <!--<ImageButton
         android:layout_width="20dp"
