@@ -23,18 +23,26 @@ public class Database {
 
     public static final String PREFS_NAME = "recipez";
     public static final String FAV_LIST_KEY = "favorites";
+    public static final String MY_LIST_KEY = "myList";
+    public static final String MY_LIST_INGREDIENTS = "ingredients";
 
     SharedPreferences sharedPref;
     SharedPreferences.Editor prefEditor;
 
     public Activity activity;
 
+    public ArrayList<String> myList;
+    public HashMap<String, Set<String>> myListIngredientsMap;
+
     public ArrayList<String> favoritesList; //keys for all of the jsonobjects
     public HashMap<String, JSONObject> jSONMap; //contains all json objects with their cooresponding keys from favorites list
+    //public ArrayList<String>
 
     public Database(Activity activity) {
         favoritesList = new ArrayList<>();
         jSONMap = new HashMap<>();
+        myList = new ArrayList<>();
+        myListIngredientsMap = new HashMap<>();
 
         this.activity = activity;
 
@@ -42,6 +50,70 @@ public class Database {
         prefEditor = activity.getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
         retrieveDataFromStorage();
     }
+    //-----------------------------------for MyList use--------------------------------------------
+    public void addListToMyLists(String listName){
+        myList.add(listName);
+        if(sharedPref.contains(MY_LIST_KEY)){
+            prefEditor.remove(MY_LIST_KEY);
+        }
+        if(myListIngredientsMap.containsKey(listName+MY_LIST_INGREDIENTS)){
+            myListIngredientsMap.remove(listName+MY_LIST_INGREDIENTS);
+        }
+
+        myListIngredientsMap.put(listName+MY_LIST_INGREDIENTS, new HashSet<String>());
+
+
+        prefEditor.putStringSet(MY_LIST_KEY, new HashSet<>(myList));
+        prefEditor.putStringSet(listName + MY_LIST_INGREDIENTS, new HashSet<String>());
+
+        prefEditor.commit();
+    }
+
+    public void removeListFromMyLists(String listName){
+        myList.remove(listName);
+        myListIngredientsMap.remove(listName+MY_LIST_INGREDIENTS);
+
+        if(sharedPref.contains(listName)){
+            prefEditor.remove(listName);
+        }
+        if(sharedPref.contains(listName+MY_LIST_INGREDIENTS)){
+            prefEditor.remove(listName+MY_LIST_INGREDIENTS);
+        }
+
+        prefEditor.commit();
+    }
+
+    public void addIngredientToMyList(String listName, String ingredient){
+        myListIngredientsMap.get(listName+MY_LIST_INGREDIENTS).add(ingredient);
+        if(sharedPref.contains(listName+MY_LIST_INGREDIENTS)){
+            prefEditor.remove(listName+MY_LIST_INGREDIENTS);
+        }
+        prefEditor.putStringSet(listName+MY_LIST_INGREDIENTS, myListIngredientsMap.get(listName + MY_LIST_INGREDIENTS));
+        prefEditor.commit();
+    }
+
+    public void removeIngredientFromMyList(String listName, String ingredient){
+        myListIngredientsMap.get(listName).remove(ingredient);
+        if(sharedPref.contains(listName+MY_LIST_INGREDIENTS)){
+            prefEditor.remove(listName+MY_LIST_INGREDIENTS);
+        }
+        prefEditor.putStringSet(listName+MY_LIST_INGREDIENTS, myListIngredientsMap.get(listName + MY_LIST_INGREDIENTS));
+        prefEditor.commit();
+    }
+
+    public ArrayList<String> getMyList(){
+        return myList;
+    }
+
+    public ArrayList<String> getIngredientSet(String listName){
+        ArrayList<String> ingredientList = new ArrayList<>();
+        ingredientList.addAll(myListIngredientsMap.get(listName+MY_LIST_INGREDIENTS));
+        return ingredientList;
+    }
+
+    //-----------------------------------for MyList use--------------------------------------------
+
+    //-----------------------------------for JSON obj use------------------------------------------
 
     public void storeJSONObject(JSONObject jObj) throws org.json.JSONException {
         String keyId = jObj.getString("id");
@@ -81,8 +153,12 @@ public class Database {
         return favoritesList;
     }
 
+    //-----------------------------------for JSON obj use------------------------------------------
+
     public void retrieveDataFromStorage() {
         Set<String> favoritesSet = sharedPref.getStringSet(FAV_LIST_KEY, null);
+        Set<String> myListSet = sharedPref.getStringSet(MY_LIST_KEY, null);
+
         if (favoritesSet != null) {
             for (String fav : favoritesSet) {
                 favoritesList.add(fav);
@@ -94,13 +170,32 @@ public class Database {
             }
 
         }
+
+        if(myListSet != null){
+            for(String listItem : myListSet){
+                myList.add(listItem);
+                Set<String> myListIngredientSet = sharedPref.getStringSet(listItem+MY_LIST_INGREDIENTS, null);
+                myListIngredientsMap.put(listItem+MY_LIST_INGREDIENTS, myListIngredientSet);
+            }
+        }
+
+
     }
 
     public void printDatabase() { //method for testing the functionality of the database
-        System.out.println("printing info. from the database...");
+        System.out.println("printing json info. from the database...");
         for (String fav : favoritesList) {
             System.out.println(fav);
             System.out.println((jSONMap.get(fav)).toString());
+        }
+
+        for(String myListName : myList){
+            System.out.println("list name: " + myListName);
+            if(myListIngredientsMap.containsKey(myListName)){
+                for(String myListIngredient : myListIngredientsMap.get(myListName)){
+                    System.out.println("ingredient: " + myListIngredient);
+                }
+            }
         }
     }
 

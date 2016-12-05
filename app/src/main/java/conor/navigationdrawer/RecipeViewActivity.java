@@ -1,8 +1,9 @@
 package conor.navigationdrawer;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,6 +23,7 @@ public class RecipeViewActivity extends AppCompatActivity {
     private ImageView recipeImage;
     private TextView recipeTitle;
     private LinearLayout ingredientList;
+    private Database database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +31,8 @@ public class RecipeViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recipe_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        database = new Database(this);
 
         recipeTitle = (TextView) findViewById(R.id.recipe_title);
         recipeImage = (ImageView) findViewById(R.id.recipe_image);
@@ -56,8 +61,28 @@ public class RecipeViewActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "This will add the ingredients to a list", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                AlertDialog.Builder listSelectDialog = new AlertDialog.Builder(RecipeViewActivity.this);
+                listSelectDialog.setTitle("Add Ingredients to List:")
+                        .setItems(database.getMyList().toArray(new CharSequence[database.getMyList().size()]),
+                                new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                try {
+                                    JSONArray ingredients = recipe.getJSONArray("extendedIngredients");
+                                    for(int i=0; i < ingredients.length(); i++){
+                                        database.addIngredientToMyList(database.getMyList().get(which),
+                                                ingredients.getJSONObject(i).getString("originalString"));
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                listSelectDialog.create().show();
+
+//                Snackbar.make(view, "This will add the ingredients to a list", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
             }
         });
     }
