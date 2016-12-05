@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -40,7 +39,6 @@ public class DiscoverActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private GridView recipeGrid;
-    private Button loadMore;
     private RecipeAdapter recipeGridAdapter;
     public final static String RECIPE_JSON = "Recipe json";
     /**
@@ -223,9 +221,10 @@ public class DiscoverActivity extends AppCompatActivity
     }
 
     class RestGetTask extends AsyncTask<String, Void, String> {
-
+        private String url;
         @Override
         protected String doInBackground(String... params) {
+            this.url = params[0];
             HttpURLConnection connection = null;
             String response = null;
             try {
@@ -264,6 +263,9 @@ public class DiscoverActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(String s) {
+            if(s == null) {
+                return;
+            }
             try {
                 JSONObject response = new JSONObject(s);
                 JSONArray newRecipes = response.getJSONArray("recipes");

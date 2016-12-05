@@ -1,12 +1,15 @@
 package conor.navigationdrawer;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,13 +20,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class RecipeViewActivity extends AppCompatActivity {
+public class RecipeViewActivity extends AppCompatActivity implements View.OnClickListener {
 
     private JSONObject recipe;
     private ImageView recipeImage;
-    private TextView recipeTitle;
+    private TextView recipeTitle, recipeInstructions, instructionsTitle;
     private LinearLayout ingredientList;
     private Database database;
+    private Button viewRecipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,14 +39,24 @@ public class RecipeViewActivity extends AppCompatActivity {
         database = new Database(this);
 
         recipeTitle = (TextView) findViewById(R.id.recipe_title);
+        recipeInstructions = (TextView) findViewById(R.id.recipe_instructions);
+        instructionsTitle = (TextView) findViewById(R.id.instructions_title);
         recipeImage = (ImageView) findViewById(R.id.recipe_image);
         ingredientList = (LinearLayout) findViewById(R.id.ingredient_list);
+
+        viewRecipe = (Button) findViewById(R.id.view_recipe);
+        viewRecipe.setOnClickListener(this);
 
         try {
             String json = getIntent().getStringExtra(DiscoverActivity.RECIPE_JSON);
             recipe = new JSONObject(json);
 
             recipeTitle.setText(recipe.getString("title"));
+            if(recipe.getString("instructions") != null){
+                recipeInstructions.setText(recipe.getString("instructions"));
+            } else {
+                instructionsTitle.setVisibility(View.GONE);
+            }
             Picasso.with(this)
                     .load(recipe.getString("image"))
                     .placeholder(R.drawable.stock_no_image)
@@ -96,4 +110,19 @@ public class RecipeViewActivity extends AppCompatActivity {
         return output.substring(0,output.length()-1);
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.view_recipe:
+                try {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(recipe.getString("sourceUrl")));
+                    startActivity(browserIntent);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+            default:
+                break;
+        }
+    }
 }
