@@ -52,6 +52,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Ingredients:"
+                    android:textStyle="bold"
                     android:textSize="20dp"
                     android:paddingBottom="6dp"
                     />
@@ -60,10 +61,19 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:id="@+id/ingredient_list"></LinearLayout>
-                <!--<ListView-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="200dp"-->
-                    <!--android:id="@+id/ingredient_list"></ListView>-->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20dp"
+                    android:paddingBottom="6dp"
+                    android:textStyle="bold"
+                    android:text="Instructions:"
+                    android:id="@+id/instructions_title"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16dp"
+                    android:id="@+id/recipe_instructions"/>
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
