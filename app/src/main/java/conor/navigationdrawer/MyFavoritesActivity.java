@@ -56,6 +56,7 @@ public class MyFavoritesActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         database = DiscoverActivity.database;
+        //database = new Database(this);
         ArrayList<JSONObject> favorites = database.getFavoritesList();
         Log.d("FAVORITES", "Size: "+favorites.size());
         recipeGrid = (GridView) findViewById(R.id.recipe_grid);
