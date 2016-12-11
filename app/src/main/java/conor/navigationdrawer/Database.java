@@ -2,6 +2,7 @@ package conor.navigationdrawer;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -122,11 +123,14 @@ public class Database {
     //-----------------------------------for JSON obj use------------------------------------------
 
     public void storeJSONObject(JSONObject jObj){
+
         String keyId = null;
         try {
             keyId = ""+jObj.getInt("id");
             if (!favoritesList.contains(keyId)) {
+                System.out.println("hey im storing a json object");
                 favoritesList.add(keyId);
+
             }
             jSONMap.put(keyId, jObj);
             String value = jObj.toString();
@@ -135,8 +139,9 @@ public class Database {
             }
             if (sharedPref.contains(FAV_LIST_KEY)) {
                 prefEditor.remove(FAV_LIST_KEY);
-                prefEditor.putStringSet(FAV_LIST_KEY, new HashSet<>(favoritesList));
             }
+            prefEditor.putStringSet(FAV_LIST_KEY, new HashSet<>(favoritesList));
+            Log.d("DATABASE", "keyId: " + keyId);
             prefEditor.commit();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -175,14 +180,23 @@ public class Database {
     //-----------------------------------for JSON obj use------------------------------------------
 
     public void retrieveDataFromStorage() {
+        Log.d("DATABASE","retrieving data from storage");
+
         Set<String> favoritesSet = sharedPref.getStringSet(FAV_LIST_KEY, null);
+        if(favoritesSet != null) {
+            Log.d("DATABASE", "favset size: " + favoritesSet.size());
+        }
         Set<String> myListSet = sharedPref.getStringSet(MY_LIST_KEY, null);
 
         if (favoritesSet != null) {
             for (String fav : favoritesSet) {
                 favoritesList.add(fav);
+                Log.d("DATABASE", "fav: " + fav);
+
                 try {
                     jSONMap.put(fav, new JSONObject(sharedPref.getString(fav, null)));
+                    //System.out.println("json object: " + sharedPref.getString(fav, null));
+                    Log.d("DATABASE", "json object: " + sharedPref.getString(fav, null));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -193,7 +207,8 @@ public class Database {
         if(myListSet != null){
             for(String listItem : myListSet){
                 myList.add(listItem);
-                System.out.println("listItem: " + listItem);
+                //System.out.println("listItem: " + listItem);
+                Log.d("DATABASE", "list item: " + listItem);
                 Set<String> myListIngredientSet = sharedPref.getStringSet(listItem+MY_LIST_INGREDIENTS, null);
                 myListIngredientsMap.put(listItem+MY_LIST_INGREDIENTS, myListIngredientSet);
             }
@@ -206,6 +221,7 @@ public class Database {
         System.out.println("printing json info. from the database...");
         for (String fav : favoritesList) {
             System.out.println(fav);
+
             System.out.println((jSONMap.get(fav)).toString());
         }
 

@@ -11,8 +11,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -24,6 +28,9 @@ public class MyFavoritesActivity extends AppCompatActivity
     private Database database;
     private GridView recipeGrid;
     private RecipeAdapter recipeGridAdapter;
+
+    public final static String RECIPE_JSON = "Recipe json";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +56,28 @@ public class MyFavoritesActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         database = DiscoverActivity.database;
+        //database = new Database(this);
         ArrayList<JSONObject> favorites = database.getFavoritesList();
         Log.d("FAVORITES", "Size: "+favorites.size());
         recipeGrid = (GridView) findViewById(R.id.recipe_grid);
         recipeGridAdapter = new RecipeAdapter(this);
         recipeGridAdapter.addItems(favorites);
         recipeGrid.setAdapter(recipeGridAdapter);
+        recipeGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+                JSONObject recipe = (JSONObject) recipeGridAdapter.getItem(position);
+                Intent intent = new Intent(MyFavoritesActivity.this, RecipeViewActivity.class);
+                intent.putExtra(RECIPE_JSON, recipe.toString());
+                startActivity(intent);
+                try {
+                    Toast.makeText(MyFavoritesActivity.this, "" + recipe.getInt("id"),
+                            Toast.LENGTH_SHORT).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
