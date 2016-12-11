@@ -46,6 +46,11 @@ public class RecipeAdapter extends BaseAdapter {
         this.notifyDataSetChanged();
     }
 
+    public void clearItems(){
+        recipes.clear();
+        this.notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return recipes.size();

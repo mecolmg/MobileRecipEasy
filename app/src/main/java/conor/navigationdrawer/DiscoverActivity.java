@@ -38,6 +38,9 @@ public class DiscoverActivity extends AppCompatActivity
     private RecipeAdapter recipeGridAdapter;
     public final static String RECIPE_JSON = "Recipe json";
     public static Database database;
+    private boolean searching = false;
+    private String searchQuery = "";
+    private int searchOffset = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +99,11 @@ public class DiscoverActivity extends AppCompatActivity
                     }
                 } else {
                     if (firstVisibleItem + visibleItemCount >= totalItemCount) {
-                        new RestGetTask().execute("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/random?limitLicense=false&number=10");
+                        if(searching){
+                            new RestGetTask().execute("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/search?limitLicense=false&number=10&offset="+(10*searchOffset++)+"&query="+searchQuery);
+                        } else {
+                            new RestGetTask().execute("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/random?limitLicense=false&number=10");
+                        }
                         loading = true;
                     }
                 }
@@ -131,14 +138,24 @@ public class DiscoverActivity extends AppCompatActivity
 
             public boolean onQueryTextSubmit(String query) {
                 //Here u can get the value "query" which is entered in the search box.
-
-                //QUERY THE API FROM HERE
-
-                //Log.e("Query Submitted", query);
+                searching = true;
+                searchOffset = 1;
+                searchQuery = query;
+                recipeGridAdapter.clearItems();
+                new RestGetTask().execute("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/search?limitLicense=false&number=10&offset=0&query="+query);
                 return true;
             }
         };
         searchView.setOnQueryTextListener(queryTextListener);
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                searching = false;
+                recipeGridAdapter.clearItems();
+                new RestGetTask().execute("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/random?limitLicense=false&number=10");
+                return false;
+            }
+        });
 
         return true;
     }
@@ -256,9 +273,18 @@ public class DiscoverActivity extends AppCompatActivity
             }
             try {
                 JSONObject response = new JSONObject(s);
-                JSONArray newRecipes = response.getJSONArray("recipes");
+                JSONArray newRecipes;
+                if(!searching) {
+                    newRecipes = response.getJSONArray("recipes");
+                } else {
+                    newRecipes = response.getJSONArray("results");
+                }
                 ArrayList<JSONObject> recipeList = new ArrayList<>();
                 for (int i = 0; i < newRecipes.length(); i++) {
+                    if(searching) {
+                        newRecipes.getJSONObject(i).put("image", "https://spoonacular.com/recipeImages/"+
+                                newRecipes.getJSONObject(i).getString("image"));
+                    }
                     recipeList.add(newRecipes.getJSONObject(i));
                 }
                 recipeGridAdapter.addItems(recipeList);
