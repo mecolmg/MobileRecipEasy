@@ -18,10 +18,6 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
-
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,11 +37,6 @@ public class DiscoverActivity extends AppCompatActivity
     private GridView recipeGrid;
     private RecipeAdapter recipeGridAdapter;
     public final static String RECIPE_JSON = "Recipe json";
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
     public static Database database;
 
     @Override
@@ -81,12 +72,12 @@ public class DiscoverActivity extends AppCompatActivity
                 Intent intent = new Intent(DiscoverActivity.this, RecipeViewActivity.class);
                 intent.putExtra(RECIPE_JSON, recipe.toString());
                 startActivity(intent);
-                try {
-                    Toast.makeText(DiscoverActivity.this, "" + recipe.getInt("id"),
-                            Toast.LENGTH_SHORT).show();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+//                try {
+////                    Toast.makeText(DiscoverActivity.this, "" + recipe.getInt("id"),
+////                            Toast.LENGTH_SHORT).show();
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
             }
         });
 
@@ -111,9 +102,6 @@ public class DiscoverActivity extends AppCompatActivity
                 }
             }
         });
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
